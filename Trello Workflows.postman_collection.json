@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "e16151e9-265d-4bb9-8c1f-a558b0fa0069",
+		"name": "Trello Workflows",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create boards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce1c186e-c172-4f76-a334-5ac39d743a12",
+						"exec": [
+							" const response=pm.response.json();",
+							" const boardId=response.id;",
+							" pm.environment.set('BoardId',boardId);",
+							" ",
+							"pm.test(\"Status is 200\",function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"inside the something else\", function(){",
+							"    ",
+							"    pm.expect(response.prefs.hideVotes).to.eql(false);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/boards/?key={{ApiTrelloKey}}&token={{ApiTrelloToken}}&name=New board &defaultLists=false",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{ApiTrelloKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{ApiTrelloToken}}"
+						},
+						{
+							"key": "name",
+							"value": "New board "
+						},
+						{
+							"key": "defaultLists",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create lists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b763be3e-f393-43da-9e76-380aa2cd1dfb",
+						"exec": [
+							"const response=pm.response.json();",
+							"const listId=response.id;",
+							"pm.environment.set('ListId',listId);",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/lists?key={{ApiTrelloKey}}&token={{ApiTrelloToken}}&name=new list seccs&idBoard={{BoardId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{ApiTrelloKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{ApiTrelloToken}}"
+						},
+						{
+							"key": "name",
+							"value": "new list seccs"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{BoardId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create cards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c3561479-55d7-4ac9-9a7d-809bdb6c7829",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"if(pm.environment.get(\"isAllreadyRun\")){",
+							"    postman.setNextRequest(\"Archive list\");",
+							"}",
+							"else{",
+							"    postman.setNextRequest(\"Create lists\");",
+							"    pm.environment.set(\"isAllreadyRun\",1);",
+							"    ",
+							"   ",
+							"    ",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/cards?idList={{ListId}}&key={{ApiTrelloKey}}&token={{ApiTrelloToken}}&name=new card scesee",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{ListId}}"
+						},
+						{
+							"key": "key",
+							"value": "{{ApiTrelloKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{ApiTrelloToken}}"
+						},
+						{
+							"key": "name",
+							"value": "new card scesee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Archive list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a829b062-5e3d-4e1e-905c-0fbcd778f6d4",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/lists/:id/closed?value=true&key={{ApiTrelloKey}}&token={{ApiTrelloToken}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"lists",
+						":id",
+						"closed"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "true"
+						},
+						{
+							"key": "key",
+							"value": "{{ApiTrelloKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{ApiTrelloToken}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{ListId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5dd4944-66ee-4fc1-bc63-cc8e13c378ad",
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/boards/:id?key={{ApiTrelloKey}}&token={{ApiTrelloToken}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"boards",
+						":id"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{ApiTrelloKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{ApiTrelloToken}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{BoardId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
